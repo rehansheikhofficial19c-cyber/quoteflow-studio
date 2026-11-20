@@ -67,7 +67,7 @@
 <details><summary>Do I need to provide text and photos?</summary><p>We can help prepare website copy. You must provide accurate business details. Photos should be supplied by you or sourced with appropriate usage rights.</p></details>
 </div></div></section>
 <section class="section contact-section" id="contact"><div class="container"><div class="section-heading"><div class="kicker">Start a conversation</div><h2>Let's plan a better website for your business.</h2><p>Share a few details about your cleaning company and the website you have in mind.</p></div><div class="contact-grid"><div class="contact-info"><h3>Tell us what you need.</h3><p>Whether you are starting from scratch or replacing an outdated website, we can discuss the right next step for your business.</p><p><strong>Email us directly</strong><br><a class="contact-email" href="mailto:quoteflowstudio@gmail.com">quoteflowstudio@gmail.com</a></p><p class="contact-small">We aim to respond within one business day. Project scope, price and timeline are confirmed before work begins.</p></div>
-<form class="enquiry-form" id="enquiryForm" action="https://formsubmit.co/ajax/quoteflowstudio@gmail.com" method="POST"><input type="hidden" name="_subject" value="New QuoteFlow Studio website enquiry"><input type="hidden" name="_template" value="table"><input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+<form class="enquiry-form" id="enquiryForm" action="https://formspree.io/f/mzerabzz" method="POST"><input type="hidden" name="_subject" value="New QuoteFlow Studio website enquiry"><input type="hidden" name="_template" value="table"><input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
 <div class="form-grid">
 <div class="field"><label for="name">Your name</label><input id="name" name="name" autocomplete="name" required placeholder="Alex Morgan"></div>
 <div class="field"><label for="business">Business name</label><input id="business" name="business" required placeholder="Your cleaning company"></div>
@@ -93,14 +93,14 @@ enquiryForm.addEventListener("submit",async function(e){
   submitButton.textContent="Sending...";
   status.textContent="Sending your enquiry securely...";
   try{
-    const response=await fetch("https://formsubmit.co/ajax/quoteflowstudio@gmail.com",{
+    const response=await fetch("https://formspree.io/f/mzerabzz",{
       method:"POST",
-      headers:{"Content-Type":"application/json","Accept":"application/json"},
-      body:JSON.stringify(Object.fromEntries(new FormData(enquiryForm)))
+      headers:{"Accept":"application/json"},
+      body:new FormData(enquiryForm)
     });
     const result=await response.json();
-    if(!response.ok||String(result.success)!=="true") throw new Error(result.message||"FormSubmit rejected the submission");
-    status.textContent="Thank you! Your enquiry has been sent. We’ll get back to you within one business day.";
+    if(!response.ok||result.errors) throw new Error((result.errors||[]).map(item=>item.message).join(", ")||result.error||"Formspree rejected the submission");
+    status.textContent="Thank you! Your enquiry has been submitted. We’ll get back to you within one business day.";
     enquiryForm.reset();
   }catch(error){
     status.textContent="Enquiry not sent: "+(error.message||"Please try again or email quoteflowstudio@gmail.com directly.");
