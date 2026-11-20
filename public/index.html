@@ -67,13 +67,14 @@
 <details><summary>Do I need to provide text and photos?</summary><p>We can help prepare website copy. You must provide accurate business details. Photos should be supplied by you or sourced with appropriate usage rights.</p></details>
 </div></div></section>
 <section class="section contact-section" id="contact"><div class="container"><div class="section-heading"><div class="kicker">Start a conversation</div><h2>Let's plan a better website for your business.</h2><p>Share a few details about your cleaning company and the website you have in mind.</p></div><div class="contact-grid"><div class="contact-info"><h3>Tell us what you need.</h3><p>Whether you are starting from scratch or replacing an outdated website, we can discuss the right next step for your business.</p><p><strong>Email us directly</strong><br><a class="contact-email" href="mailto:quoteflowstudio@gmail.com">quoteflowstudio@gmail.com</a></p><p class="contact-small">We aim to respond within one business day. Project scope, price and timeline are confirmed before work begins.</p></div>
-<form class="enquiry-form" id="enquiryForm"><div class="form-grid">
+<form class="enquiry-form" id="enquiryForm" action="https://formsubmit.co/ajax/quoteflowstudio@gmail.com" method="POST"><input type="hidden" name="_subject" value="New QuoteFlow Studio website enquiry"><input type="hidden" name="_template" value="table"><input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+<div class="form-grid">
 <div class="field"><label for="name">Your name</label><input id="name" name="name" autocomplete="name" required placeholder="Alex Morgan"></div>
 <div class="field"><label for="business">Business name</label><input id="business" name="business" required placeholder="Your cleaning company"></div>
 <div class="field full"><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" required placeholder="you@company.com"></div>
 <div class="field full"><label for="service">What do you need?</label><select id="service" name="service"><option>New business website</option><option>Redesign my existing website</option><option>Landing page</option><option>Not sure yet</option></select></div>
 <div class="field full"><label for="message">A little about your project</label><textarea id="message" name="message" required placeholder="Your services, location, current website (if any) and goals..."></textarea></div>
-</div><button class="btn" type="submit">Prepare Enquiry Email ↗</button><p class="form-note">This button opens an email draft addressed to QuoteFlow Studio. It does not send automatically or store submissions; a hosted form service is not connected yet.</p></form>
+</div><button class="btn" type="submit" id="enquirySubmit">Send Enquiry ↗</button><p class="form-note" id="formStatus" role="status" aria-live="polite">Your enquiry will be sent securely to our email. We aim to respond within one business day.</p></form>
 </div></div></section>
 </main>
 <footer class="footer"><div class="container footer-inner"><div><div class="footer-brand">QuoteFlow Studio</div><div class="footer-tag">Websites That Turn Visitors Into Customers.</div></div><div>© <span id="year"></span> QuoteFlow Studio. All rights reserved.</div></div></footer>
@@ -83,6 +84,30 @@ document.getElementById("year").textContent=new Date().getFullYear();
 const menu=document.getElementById("menuToggle"),nav=document.getElementById("siteNav");
 menu.addEventListener("click",()=>{const open=nav.classList.toggle("open");menu.setAttribute("aria-expanded",String(open));menu.setAttribute("aria-label",open?"Close navigation":"Open navigation");menu.textContent=open?"×":"☰";});
 nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");menu.setAttribute("aria-expanded","false");menu.setAttribute("aria-label","Open navigation");menu.textContent="☰";}));
-document.getElementById("enquiryForm").addEventListener("submit",function(e){e.preventDefault();const d=new FormData(this);const subject=encodeURIComponent("Website enquiry from "+d.get("business"));const body=encodeURIComponent("Name: "+d.get("name")+"\nBusiness: "+d.get("business")+"\nEmail: "+d.get("email")+"\nProject: "+d.get("service")+"\n\nDetails:\n"+d.get("message"));window.location.href="mailto:quoteflowstudio@gmail.com?subject="+subject+"&body="+body;});
+const enquiryForm=document.getElementById("enquiryForm");
+enquiryForm.addEventListener("submit",async function(e){
+  e.preventDefault();
+  const submitButton=document.getElementById("enquirySubmit");
+  const status=document.getElementById("formStatus");
+  submitButton.disabled=true;
+  submitButton.textContent="Sending...";
+  status.textContent="Sending your enquiry securely...";
+  try{
+    const response=await fetch("https://formsubmit.co/ajax/quoteflowstudio@gmail.com",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body:JSON.stringify(Object.fromEntries(new FormData(enquiryForm)))
+    });
+    const result=await response.json();
+    if(!response.ok||result.success===false) throw new Error(result.message||"Submission failed");
+    status.textContent="Thank you! Your enquiry has been sent. We’ll get back to you within one business day.";
+    enquiryForm.reset();
+  }catch(error){
+    status.textContent="Sorry, your enquiry could not be sent. Please email quoteflowstudio@gmail.com directly.";
+  }finally{
+    submitButton.disabled=false;
+    submitButton.textContent="Send Enquiry ↗";
+  }
+});
 </script>
 </body></html>
