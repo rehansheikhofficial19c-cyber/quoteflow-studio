@@ -99,11 +99,11 @@ enquiryForm.addEventListener("submit",async function(e){
       body:JSON.stringify(Object.fromEntries(new FormData(enquiryForm)))
     });
     const result=await response.json();
-    if(!response.ok||result.success===false) throw new Error(result.message||"Submission failed");
+    if(!response.ok||String(result.success)!=="true") throw new Error(result.message||"FormSubmit rejected the submission");
     status.textContent="Thank you! Your enquiry has been sent. We’ll get back to you within one business day.";
     enquiryForm.reset();
   }catch(error){
-    status.textContent="Sorry, your enquiry could not be sent. Please email quoteflowstudio@gmail.com directly.";
+    status.textContent="Enquiry not sent: "+(error.message||"Please try again or email quoteflowstudio@gmail.com directly.");
   }finally{
     submitButton.disabled=false;
     submitButton.textContent="Send Enquiry ↗";
